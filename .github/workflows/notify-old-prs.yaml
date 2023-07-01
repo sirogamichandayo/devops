@@ -1,7 +1,9 @@
 name: Notify Unreviewed PRs
 
 on:
-  push:
+  schedule:
+    # Runs every weekday (Mon-Fri) at 9:00 JTC
+    - cron: '0 0 * * 1-5'
 
 jobs:
   notify:
