@@ -40,7 +40,7 @@ jobs:
             }
             
             if (unreviewedPRs.length === 0) {
-              return ":hooray_excited::hooray_excited:放置されている PR はありません！！";
+              return ":hooray_excited::hooray_excited:放置されている PR はありません！";
             } 
             
             const links = unreviewedPRs.map(pr => `■ <${pr.html_url}|${pr.title}>`);
@@ -67,4 +67,4 @@ jobs:
             }
         env:
           SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
-          SLACK_WEBHOOK_URL: ${{ secrets.TOMOOKA_SLACK_INCOMING_WEBHOOK_URL }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_INCOMING_WEBHOOK_URL }}
