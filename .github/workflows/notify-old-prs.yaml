@@ -40,12 +40,12 @@ jobs:
             }
             
             if (unreviewedPRs.length === 0) {
-              return ":+1::+1:放置されている PR はありません！";
+              return "放置されている PR はありません！:+1:";
             } 
             
             const links = unreviewedPRs.map(pr => `■ <${pr.html_url}|${pr.title}>`);
             return [
-              ":rotating_light:*以下のPRが1日以上レビューされていません*\n",
+              ":rotating_light:*以下のPRが1日以上レビューされていません*:rotating_light:\n",
               ...links
             ].join('\n');
       - name: Posting to Slack
