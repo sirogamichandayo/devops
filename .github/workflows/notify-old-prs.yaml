@@ -1,9 +1,7 @@
 name: Notify Unreviewed PRs
 
 on:
-  schedule:
-    # Runs every weekday (Mon-Fri) at 9:00 JTC
-    - cron: '0 0 * * 1-5'
+  push:
 
 jobs:
   notify:
@@ -21,7 +19,7 @@ jobs:
               state: 'open'
             });
 
-            let unreviewedPRs = [];
+            const unreviewedPRs = [];
             const currentDate = new Date();
             for (const pr of pullRequests) {
             　const createdDate = new Date(pr.created_at);
