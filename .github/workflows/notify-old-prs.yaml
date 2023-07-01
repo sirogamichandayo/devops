@@ -1,0 +1,70 @@
+name: Notify Unreviewed PRs
+
+on:
+  push:
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch unreviewed PRs
+        id: make_message
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const { data: pullRequests } = await github.rest.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open'
+            });
+
+            let unreviewedPRs = [];
+            const currentDate = new Date();
+            for (const pr of pullRequests) {
+            　const createdDate = new Date(pr.created_at);
+              const elapsedTimeInHours = (currentDate - createdDate) / 1000 / 60 / 60;　
+              if (elapsedTimeInHours < 24 || pr.draft) {
+                continue;
+              }　
+            
+              const { data: reviews } = await github.rest.pulls.listReviews({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: pr.number
+              });
+            
+              if (reviews.length === 0) {
+                unreviewedPRs.push(pr);
+              }
+            }
+            
+            if (unreviewedPRs.length === 0) {
+              return ":hooray_excited::hooray_excited:放置されている PR はありません！！";
+            } 
+            
+            const links = unreviewedPRs.map(pr => `■ <${pr.html_url}|${pr.title}>`);
+            return [
+              ":rotating_light:*以下のPRが1日以上レビューされていません*\n",
+              ...links
+            ].join('\n');
+      - name: Posting to Slack
+        id: slack
+        uses: slackapi/slack-github-action@v1.23.0
+        with:
+          payload: |
+            {
+              "text": ${{ steps.make_message.outputs.result }},
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": ${{ steps.make_message.outputs.result }}
+                  }
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+          SLACK_WEBHOOK_URL: ${{ secrets.TOMOOKA_SLACK_INCOMING_WEBHOOK_URL }}
