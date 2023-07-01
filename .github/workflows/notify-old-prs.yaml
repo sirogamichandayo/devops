@@ -25,7 +25,6 @@ jobs:
             　const createdDate = new Date(pr.created_at);
               const elapsedTimeInHours = (currentDate - createdDate) / 1000 / 60 / 60;　
               if (elapsedTimeInHours < 24 || pr.draft) {
-                continue;
               }　
             
               const { data: reviews } = await github.rest.pulls.listReviews({
