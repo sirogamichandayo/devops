@@ -7,7 +7,7 @@ jobs:
   notify:
     runs-on: ubuntu-latest
     steps:
-      - name: Fetch unreviewed PRs
+      - name: Make unreviewed PRs message
         id: make_message
         uses: actions/github-script@v6
         with:
@@ -40,7 +40,7 @@ jobs:
             }
             
             if (unreviewedPRs.length === 0) {
-              return ":クラッカー::クラッカー:放置されている PR はありません！";
+              return ":+1::+1:放置されている PR はありません！";
             } 
             
             const links = unreviewedPRs.map(pr => `■ <${pr.html_url}|${pr.title}>`);
